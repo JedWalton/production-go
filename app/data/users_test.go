@@ -36,7 +36,6 @@ func TestIntegrationCreateAndDeleteUser(t *testing.T) {
 	defer db.DB().Close()
 
 	// Test data
-	// Use a unique username and email for the test
 	username := generateUniqueUsername("testuser")
 	password := "testpassword123"
 	email := fmt.Sprintf("%s@example.com", username)
