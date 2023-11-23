@@ -1,8 +1,11 @@
 package presentation
 
-import "production-go/service"
+import (
+	"net/http"
+	"production-go/service"
+)
 
 // This is where routes are defined
-func SetupRoutes(service *service.ServiceContainer) {
+func SetupRoutes(mux *http.ServeMux, service *service.ServiceContainer) {
 
 }

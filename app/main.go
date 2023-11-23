@@ -19,10 +19,6 @@ func main() {
 		log.Fatal(err)
 	}
 
-	serviceContainer := service.NewServiceContainer(pg)
-
-	presentation.SetupRoutes(serviceContainer)
-
 	// Set up CORS middlware
 	corsHandler := handlers.CORS(
 		handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}),
@@ -32,6 +28,10 @@ func main() {
 
 	// Wrap the original mux with the CORS handler.
 	corsEnabledMux := corsHandler(mux)
+
+	serviceContainer := service.NewServiceContainer(pg)
+
+	presentation.SetupRoutes(mux, serviceContainer)
 
 	// Use the CORS-enabled mux in your server.
 	Port := os.Getenv("PORT")
