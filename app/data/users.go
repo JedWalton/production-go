@@ -56,3 +56,13 @@ func DeleteUser(db *sql.DB, username string) error {
 	// Commit the transaction
 	return tx.Commit()
 }
+
+// GetPasswordHash retrieves the password hash for a given username.
+func GetPasswordHash(db *sql.DB, username string) (string, error) {
+	var passwordHash string
+	err := db.QueryRow("SELECT password_hash FROM users WHERE username = $1", username).Scan(&passwordHash)
+	if err != nil {
+		return "", err
+	}
+	return passwordHash, nil
+}

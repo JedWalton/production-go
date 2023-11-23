@@ -13,6 +13,10 @@ type PostgreSQL struct {
 	db *sql.DB
 }
 
+func (pg *PostgreSQL) DB() *sql.DB {
+	return pg.db
+}
+
 func NewPostgreSQL() (*PostgreSQL, error) {
 	// Load .env file from Git root
 	err := godotenv.Load("../../.env") // Adjust the relative path as necessary

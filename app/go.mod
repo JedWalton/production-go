@@ -17,4 +17,5 @@ require (
 	github.com/felixge/httpsnoop v1.0.3 // indirect
 	github.com/joho/godotenv v1.5.1
 	github.com/stretchr/testify v1.8.4
+	golang.org/x/crypto v0.15.0
 )

@@ -13,12 +13,12 @@ import (
 func StartServer() {
 	mux := http.NewServeMux()
 
-	_, err := data.NewPostgreSQL()
+	pg, err := data.NewPostgreSQL()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	presentation.SetupRoutes()
+	presentation.SetupRoutes(pg)
 
 	// Set up CORS middlware
 	corsHandler := handlers.CORS(
