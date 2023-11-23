@@ -18,7 +18,7 @@ func generateUniqueUsername(base string) string {
 	return fmt.Sprintf("%s_%d", base, rnd.Intn(10000))
 }
 
-func TestUserServiceWithChangePassword(t *testing.T) {
+func TestIntegrationUserServiceWithChangePassword(t *testing.T) {
 	// Load environment variables from .env file
 	err := godotenv.Load("../../.env") // Adjust the path to your .env file
 	assert.NoError(t, err)
