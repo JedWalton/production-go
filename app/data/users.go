@@ -66,3 +66,16 @@ func GetPasswordHash(db *sql.DB, username string) (string, error) {
 	}
 	return passwordHash, nil
 }
+
+func UpdateUserPassword(db *sql.DB, username, newHashedPassword string) error {
+	// Prepare SQL statement to update user's password
+	stmt, err := db.Prepare("UPDATE users SET password_hash = $1 WHERE username = $2")
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	// Execute the statement
+	_, err = stmt.Exec(newHashedPassword, username)
+	return err
+}

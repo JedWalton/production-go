@@ -75,3 +75,36 @@ func (s *UserService) LoginUser(username, password string) (bool, error) {
 	// Login successful
 	return true, nil
 }
+
+func (s *UserService) ChangePassword(username, oldPassword, newPassword string) error {
+	// First, verify the old password
+	passwordHash, err := data.GetPasswordHash(s.pg.DB(), username)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			// User not found
+			return errors.New("user not found")
+		}
+		// Other error
+		return err
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(passwordHash), []byte(oldPassword))
+	if err != nil {
+		// Old password does not match
+		return errors.New("incorrect current password")
+	}
+
+	// Validate new password input
+	if len(newPassword) < 8 {
+		return errors.New("new password must be at least 8 characters long")
+	}
+
+	// Hash new password
+	newHashedPassword, err := bcrypt.GenerateFromPassword([]byte(newPassword), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+
+	// Update password in the database
+	return data.UpdateUserPassword(s.pg.DB(), username, string(newHashedPassword))
+}

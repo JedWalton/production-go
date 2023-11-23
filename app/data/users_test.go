@@ -13,6 +13,16 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+func TestMain(m *testing.M) {
+	// Load .env file from Git root
+	err := godotenv.Load("../../.env")
+	if err != nil {
+		panic(fmt.Errorf("error loading .env file: %v", err))
+	}
+
+	os.Exit(m.Run())
+}
+
 func generateUniqueUsername(base string) string {
 	src := rand.NewSource(time.Now().UnixNano())
 	rnd := rand.New(src)
@@ -67,12 +77,30 @@ func TestIntegrationCreateAndDeleteUser(t *testing.T) {
 	assert.False(t, exists)
 }
 
-func TestMain(m *testing.M) {
-	// Load .env file from Git root
-	err := godotenv.Load("../../.env")
-	if err != nil {
-		panic(fmt.Errorf("error loading .env file: %v", err))
-	}
+func TestIntegrationUpdateUserPassword(t *testing.T) {
+	db, err := NewPostgreSQL()
+	assert.NoError(t, err)
+	defer db.DB().Close()
 
-	os.Exit(m.Run())
+	username := generateUniqueUsername("testuser")
+	originalPassword := "originalPassword123"
+	newPassword := "newPassword123"
+	email := fmt.Sprintf("%s@example.com", username)
+
+	// Create user
+	originalPasswordHash, _ := bcrypt.GenerateFromPassword([]byte(originalPassword), bcrypt.DefaultCost)
+	CreateUser(db.DB(), username, string(originalPasswordHash), email)
+
+	// Update password
+	newPasswordHash, _ := bcrypt.GenerateFromPassword([]byte(newPassword), bcrypt.DefaultCost)
+	err = UpdateUserPassword(db.DB(), username, string(newPasswordHash))
+	assert.NoError(t, err)
+
+	// Verify password update
+	updatedHash, err := GetPasswordHash(db.DB(), username)
+	assert.NoError(t, err)
+	assert.NotEqual(t, string(originalPasswordHash), updatedHash)
+
+	// Cleanup
+	DeleteUser(db.DB(), username)
 }
