@@ -1,8 +1,8 @@
 package presentation
 
-import "production-go/data"
+import "production-go/service"
 
 // This is where routes are defined
-func SetupRoutes(pg *data.PostgreSQL) {
+func SetupRoutes(service *service.ServiceContainer) {
 
 }
