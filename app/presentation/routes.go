@@ -5,7 +5,8 @@ import (
 	"production-go/service"
 )
 
-// This is where routes are defined
-func SetupRoutes(mux *http.ServeMux, service *service.ServiceContainer) {
-
+// SetupRoutes initializes routes for the user service
+func SetupRoutes(mux *http.ServeMux, serviceContainer *service.ServiceContainer) {
+	// Register user route
+	setupUsersServiceRoutes(mux, serviceContainer)
 }
